@@ -62,7 +62,7 @@ const gameBoard = (() => {
     return { resetBoard, makeMove, isValidMove, getResult, getBoard};
 })();
 
-const gameController =  (() => {
+const displayController =  (() => {
     const player1 = Player('Player 1', 'X');
     const player2 = Player('Player 2', 'O');
     let currentPlayer = player1;
@@ -78,11 +78,17 @@ const gameController =  (() => {
     }
 
     const cellPressed = (e) => {
+        const row = e.target.dataset.row;
+        const col = e.target.dataset.col;
+        //TODO
 
+        e.target.innerHTML = currentPlayer.symbol;
     }
 
     return {
-        isOver, changePlayerNames,
+        isOver,
+        changePlayerNames,
+        cellPressed,
     }
 })();
 
@@ -94,5 +100,26 @@ function test () {
     console.log('gameBoard.isValidMove(1, 1):', gameBoard.isValidMove(1, 1));
     console.log(gameBoard.getBoard());
     console.log(gameBoard.getResult());
-    console.log('displayController.isOver(): ', gameController.isOver());
+    console.log('displayController.isOver(): ', displayController.isOver());
 }
+
+function createDOMGrid() {
+    const board = document.getElementById('board');
+    for(let i = 0; i < 3; i++) {
+        const row = document.createElement('div');
+        row.classList.add('row');
+
+        for(let j = 0; j < 3; j++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.row = i;
+            cell.dataset.col = j;
+            cell.addEventListener('click', displayController.cellPressed)
+
+            row.appendChild(cell);
+        }
+        board.appendChild(row);
+    }
+}
+
+createDOMGrid();
