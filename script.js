@@ -24,7 +24,7 @@ const gameBoard = (() => {
 
     const isValidMove = (row, col) => {
         if(row >= 0 && row < 3 && col >= 0 && col < 3) {
-            if(board[row][col] == "") {
+            if(!board[row][col]) {
                 return true;
             }
         }
@@ -77,12 +77,18 @@ const displayController =  (() => {
         if(nameArr[1]) player2.name = nameArr[1];
     }
 
+    const nextTurn = () => {
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+    }
+
     const cellPressed = (e) => {
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
-        //TODO
-
-        e.target.innerHTML = currentPlayer.symbol;
+        if(gameBoard.isValidMove(row, col)) {
+            gameBoard.makeMove(currentPlayer.symbol, row, col);
+            e.target.innerHTML = currentPlayer.symbol;
+            nextTurn();
+        }
     }
 
     return {
