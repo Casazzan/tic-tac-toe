@@ -91,10 +91,19 @@ const displayController =  (() => {
         }
     }
 
+    const reset = () => {
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach( cell => {
+            cell.innerHTML = "";
+        });
+        gameBoard.resetBoard();
+    }
+
     return {
         isOver,
         changePlayerNames,
         cellPressed,
+        reset,
     }
 })();
 
@@ -126,6 +135,7 @@ function createDOMGrid() {
         }
         board.appendChild(row);
     }
+    document.getElementById('reset').addEventListener('click', displayController.reset);
 }
 
 createDOMGrid();
