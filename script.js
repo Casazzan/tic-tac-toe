@@ -74,8 +74,8 @@ const gameBoard = (() => {
 })();
 
 const displayController =  (() => {
-    const player1 = Player('Player 1', 'X');
-    const player2 = Player('Player 2', 'O');
+    const player1 = Player('Player', 'X');
+    const player2 = Player('AI', 'O');
 
     let currentPlayer = player1;
     let gameOver = false;
@@ -184,19 +184,16 @@ const AI = (() => {
         if(result == AISymbol) return 2;
         if(result == 'Tie') return 1;
         if(result == playerSymbol) return -1;
-        return 0;
+        return null;
     }
 
 
     const minimax = (nodeList, maximizingPlayer, isImmediateMove) => {
-        if(getHueristic() != 0) return getHueristic();
+        if(getHueristic() !== null) return getHueristic();
         if(maximizingPlayer) {
             let value = -2;
             for(let i = 0; i < nodeList.length; i++) {
-                //console.log("length: " + nodeList.length + " i: " + i);
                 const tempNode = nodeList.splice(i, 1)[0];
-                //console.log(nodeList);
-                //console.log(tempNode);
                 gameBoard.makeMove(AISymbol, tempNode.row, tempNode.col);
                 let tempValue = minimax(nodeList, false, false);
                 if(tempValue > value) {
