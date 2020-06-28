@@ -60,12 +60,23 @@ const gameBoard = (() => {
         return null;
     }
 
-    return { resetBoard, makeMove, isValidMove, getResult, getBoard};
+    const unmakeMove = (row, col) => {
+        board[row][col] = "";
+    }
+    return { 
+        resetBoard,
+        makeMove,
+        isValidMove,
+        getResult,
+        getBoard,
+        unmakeMove,
+    };
 })();
 
 const displayController =  (() => {
     const player1 = Player('Player 1', 'X');
     const player2 = Player('Player 2', 'O');
+
     let currentPlayer = player1;
     let gameOver = false;
 
@@ -81,6 +92,20 @@ const displayController =  (() => {
 
     const nextTurn = () => {
         currentPlayer = currentPlayer == player1 ? player2 : player1;
+        if(currentPlayer.name == 'AI') {
+            makeAIMove();
+        }
+    }
+
+    const makeAIMove = () => {
+        const move = AI.getMove();
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach( (cell) => {
+            if(cell.dataset.row == move.row && cell.dataset.col == move.col){
+                cell.innerHTML = currentPlayer.symbol;
+            }
+        });
+        makeMove(move.row, move.col);
     }
 
     const gameOverTie = () => {
@@ -96,21 +121,25 @@ const displayController =  (() => {
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
         if(gameBoard.isValidMove(row, col)) {
-            gameBoard.makeMove(currentPlayer.symbol, row, col);
             e.target.innerHTML = currentPlayer.symbol;
-            if(isOver()) {
-                const result = gameBoard.getResult();
-                if(result === 'Tie') {
-                    gameOverTie();
-                }
-                else {
-                    gameOverWinner(currentPlayer.name);
-                }
-                gameOver = true;
+            makeMove(row, col);
+        }
+    }
+
+    const makeMove = (row, col) => {
+        gameBoard.makeMove(currentPlayer.symbol, row, col);
+        if(isOver()) {
+            const result = gameBoard.getResult();
+            if(result === 'Tie') {
+                gameOverTie();
             }
             else {
-                nextTurn();
+                gameOverWinner(currentPlayer.name);
             }
+            gameOver = true;
+        }
+        else {
+            nextTurn();
         }
     }
 
@@ -122,12 +151,87 @@ const displayController =  (() => {
         gameBoard.resetBoard();
         
         gameOver = false;
+        currentPlayer = player1;
     }
 
     return {
         changePlayerNames,
         cellPressed,
         reset,
+    }
+})();
+
+const AI = (() => {
+    let playerSymbol = 'X';
+    let AISymbol = 'O';
+    let tempBoard;
+    let bestMove;
+
+    const getEmptyNodes = () => {
+        let nodeList = [];
+        for(let row = 0; row < 3; row++) {
+            for(let col = 0; col < 3; col++) {
+                if(tempBoard[row][col] == "") {
+                    nodeList.push( {row, col} );
+                }
+            }
+        }
+        return nodeList;
+    }
+
+    const getHueristic = () => {
+        let result = gameBoard.getResult();
+        if(result == AISymbol) return 2;
+        if(result == 'Tie') return 1;
+        if(result == playerSymbol) return -1;
+        return 0;
+    }
+
+
+    const minimax = (nodeList, maximizingPlayer, isImmediateMove) => {
+        if(getHueristic() != 0) return getHueristic();
+        if(maximizingPlayer) {
+            let value = -2;
+            for(let i = 0; i < nodeList.length; i++) {
+                //console.log("length: " + nodeList.length + " i: " + i);
+                const tempNode = nodeList.splice(i, 1)[0];
+                //console.log(nodeList);
+                //console.log(tempNode);
+                gameBoard.makeMove(AISymbol, tempNode.row, tempNode.col);
+                let tempValue = minimax(nodeList, false, false);
+                if(tempValue > value) {
+                    if(isImmediateMove) {
+                        bestMove = tempNode;
+                    }
+                    value = tempValue;
+                }
+                gameBoard.unmakeMove(tempNode.row, tempNode.col);
+                nodeList.splice(i, 0, tempNode);
+            }
+            return value;
+        }
+        else {
+            let value = 3;
+            for(let i = 0; i < nodeList.length; i++) {
+                const tempNode = nodeList.splice(i, 1)[0];
+                gameBoard.makeMove(playerSymbol, tempNode.row, tempNode.col);
+                value = Math.min(value, minimax(nodeList, true, false));
+                gameBoard.unmakeMove(tempNode.row, tempNode.col);
+                nodeList.splice(i, 0, tempNode);
+            }
+            return value;
+        }
+    }
+
+    const getMove = () => {
+        tempBoard = gameBoard.getBoard();
+        let nodeList = getEmptyNodes();
+        minimax(nodeList, true, true);
+        return bestMove;
+    }
+
+    return {
+        getMove,
     }
 })();
 
