@@ -51,11 +51,12 @@ const gameBoard = (() => {
         let numEmptySquares = 0;
         for(let row = 0; row < 3; row++) {
             for(let col = 0; col < 3; col++) {
-                if(board[row][col] == "")
+                if(board[row][col] == "") {
                     numEmptySquares++;
+                }
             }
         }
-        if(numEmptySquares > 0) return "Tie";
+        if(numEmptySquares == 0) return "Tie";
         return null;
     }
 
@@ -66,6 +67,7 @@ const displayController =  (() => {
     const player1 = Player('Player 1', 'X');
     const player2 = Player('Player 2', 'O');
     let currentPlayer = player1;
+    let gameOver = false;
 
     const isOver = () => {
         return gameBoard.getResult() != null;
@@ -81,13 +83,34 @@ const displayController =  (() => {
         currentPlayer = currentPlayer == player1 ? player2 : player1;
     }
 
+    const gameOverTie = () => {
+        console.log('Tie');
+    }
+
+    const gameOverWinner = (name) => {
+        console.log(name);
+    }
+
     const cellPressed = (e) => {
+        if(gameOver) return;
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
         if(gameBoard.isValidMove(row, col)) {
             gameBoard.makeMove(currentPlayer.symbol, row, col);
             e.target.innerHTML = currentPlayer.symbol;
-            nextTurn();
+            if(isOver()) {
+                const result = gameBoard.getResult();
+                if(result === 'Tie') {
+                    gameOverTie();
+                }
+                else {
+                    gameOverWinner(currentPlayer.name);
+                }
+                gameOver = true;
+            }
+            else {
+                nextTurn();
+            }
         }
     }
 
@@ -97,10 +120,11 @@ const displayController =  (() => {
             cell.innerHTML = "";
         });
         gameBoard.resetBoard();
+        
+        gameOver = false;
     }
 
     return {
-        isOver,
         changePlayerNames,
         cellPressed,
         reset,
