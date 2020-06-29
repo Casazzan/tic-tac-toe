@@ -139,7 +139,7 @@ const displayController =  (() => {
         gameBoard.makeMove(currentPlayer.symbol, row, col);
         if(isOver()) {
             const result = gameBoard.getResult();
-            displayResult(stringifyResult(result));
+            displayResult( stringifyResult(result) );
             gameOver = true;
         }
         else {
