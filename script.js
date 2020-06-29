@@ -1,5 +1,8 @@
 const Player = (name, symbol) => {
-    return { name , symbol};
+    const toString = () => {
+        return name + ' (' + symbol +')';
+    }
+    return { name , symbol, toString};
 }
 
 const gameBoard = (() => {
@@ -60,6 +63,27 @@ const gameBoard = (() => {
         return null;
     }
 
+    const getWinningCells = () => {
+        for(let row = 0; row < 3; row++) {
+            if(board[row][0] === board[row][1] && board[row][1] === board[row][2]){
+                return [{row, 'col':0}, {row, 'col':1}, {row, 'col': 2}];
+            }
+        }
+        for(let col = 0; col < 3; col++) {
+            if(board[0][col] === board[1][col] && board[1][col] === board[2][col]) {
+                return [{'row':0, col}, {'row':1, col}, {'row':2, col}];
+            }
+        }
+
+        //check diagonal
+        if(board[0][0] === board[1][1] && board[1][1] === board[2][2]){
+            return [{'row':0,'col':0},{'row':1,'col':1},{'row':2,'col':2}];
+        }
+        if(board[0][2] === board[1][1] && board[1][1] === board[2][0]){
+            return [{'row':0,'col':2},{'row':1,'col':1},{'row':2,'col':0}];
+        }
+    }
+
     const unmakeMove = (row, col) => {
         board[row][col] = "";
     }
@@ -70,12 +94,13 @@ const gameBoard = (() => {
         getResult,
         getBoard,
         unmakeMove,
+        getWinningCells,
     };
 })();
 
 const displayController =  (() => {
     const player1 = Player('Player', 'X');
-    const player2 = Player('AI', 'O');
+    const player2 = Player('Computer', 'O');
 
     let currentPlayer = player1;
     let gameOver = false;
@@ -86,14 +111,22 @@ const displayController =  (() => {
 
     //replace names if not null
     const changePlayerNames = (nameArr) => {
-        if(nameArr[0]) player1.name = nameArr[0];
-        if(nameArr[1]) player2.name = nameArr[1];
+        if(isLegalName(nameArr[0])) player1.name = nameArr[0];
+        if(isLegalName(nameArr[1])) player2.name = nameArr[1];
+    }
+
+    const isLegalName = (name) => {
+        if(name.includes('Wins') || name.includes('Computer')) {
+            alert('Illegal name');
+            return false;
+        }
+        return true;
     }
 
     const nextTurn = () => {
         currentPlayer = currentPlayer == player1 ? player2 : player1;
-        if(currentPlayer.name == 'AI') {
-            setTimeout( () => { makeAIMove() }, 1500);
+        if(currentPlayer.name == 'Computer') {
+            setTimeout( () => { makeAIMove() }, 1000);
         }
     }
 
@@ -113,13 +146,12 @@ const displayController =  (() => {
             return 'Tie!';
         }
         else {
-            const playername = currentPlayer.name == 'AI' ? 'Computer': currentPlayer.name;
-            return (playername + '(' + currentPlayer.symbol + ') Wins!');
+            return (currentPlayer.toString() +' Wins!');
         }
     }
 
     const cellPressed = (e) => {
-        if(gameOver || currentPlayer.name == 'AI') return;
+        if(gameOver || currentPlayer.name == 'Computer') return;
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
         if(gameBoard.isValidMove(row, col)) {
@@ -132,7 +164,21 @@ const displayController =  (() => {
         const container = document.querySelector('body');
         const p = document.createElement('p');
         p.textContent = result;
+        p.classList.add('result-display');
         container.appendChild(p);
+
+        if(result.includes('Wins')) {
+            const winningCells = gameBoard.getWinningCells();
+            console.log(winningCells);
+            const displayCells = document.querySelectorAll('.cell');
+            displayCells.forEach( (displayCell) => {
+                winningCells.forEach( (winningCell) => {
+                    if(displayCell.dataset.row == winningCell.row && displayCell.dataset.col == winningCell.col) {
+                        displayCell.classList.add('winning-cell');
+                    }
+                });
+            });
+        }
     }
 
     const makeMove = (row, col) => {
@@ -151,17 +197,28 @@ const displayController =  (() => {
         const cells = document.querySelectorAll('.cell');
         cells.forEach( cell => {
             cell.innerHTML = "";
+            cell.classList.remove('winning-cell');
         });
         gameBoard.resetBoard();
+
+        const endResult = document.querySelector('.result-display');
+        endResult.parentElement.removeChild(endResult);
         
         gameOver = false;
         currentPlayer = player1;
+    }
+
+    const updatePlayerInfo = () => {
+        const playerInfos = document.querySelectorAll('.player-info');
+        playerInfos[0].textContent = player1.toString();
+        playerInfos[1].textContent = player2.toString();
     }
 
     return {
         changePlayerNames,
         cellPressed,
         reset,
+        updatePlayerInfo,
     }
 })();
 
@@ -247,7 +304,7 @@ function test () {
     console.log('displayController.isOver(): ', displayController.isOver());
 }
 
-function createDOMGrid() {
+function createDOM() {
     const board = document.getElementById('board');
     for(let i = 0; i < 3; i++) {
         const row = document.createElement('div');
@@ -264,7 +321,8 @@ function createDOMGrid() {
         }
         board.appendChild(row);
     }
-    document.getElementById('reset').addEventListener('click', displayController.reset);
+    document.getElementById('restart').addEventListener('click', displayController.reset);
+    displayController.updatePlayerInfo();
 }
 
-createDOMGrid();
+createDOM();
