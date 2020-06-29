@@ -93,7 +93,7 @@ const displayController =  (() => {
     const nextTurn = () => {
         currentPlayer = currentPlayer == player1 ? player2 : player1;
         if(currentPlayer.name == 'AI') {
-            makeAIMove();
+            setTimeout( () => { makeAIMove() }, 1500);
         }
     }
 
@@ -108,16 +108,18 @@ const displayController =  (() => {
         makeMove(move.row, move.col);
     }
 
-    const gameOverTie = () => {
-        console.log('Tie');
-    }
-
-    const gameOverWinner = (name) => {
-        console.log(name);
+    const stringifyResult = (result) =>{
+        if(result == 'Tie'){
+            return 'Tie!';
+        }
+        else {
+            const playername = currentPlayer.name == 'AI' ? 'Computer': currentPlayer.name;
+            return (playername + '(' + currentPlayer.symbol + ') Wins!');
+        }
     }
 
     const cellPressed = (e) => {
-        if(gameOver) return;
+        if(gameOver || currentPlayer.name == 'AI') return;
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
         if(gameBoard.isValidMove(row, col)) {
@@ -126,16 +128,18 @@ const displayController =  (() => {
         }
     }
 
+    const displayResult = (result) => {
+        const container = document.querySelector('body');
+        const p = document.createElement('p');
+        p.textContent = result;
+        container.appendChild(p);
+    }
+
     const makeMove = (row, col) => {
         gameBoard.makeMove(currentPlayer.symbol, row, col);
         if(isOver()) {
             const result = gameBoard.getResult();
-            if(result === 'Tie') {
-                gameOverTie();
-            }
-            else {
-                gameOverWinner(currentPlayer.name);
-            }
+            displayResult(stringifyResult(result));
             gameOver = true;
         }
         else {
