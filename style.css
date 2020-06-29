@@ -46,11 +46,20 @@ h1 {
     font-size: 1.5em;
 }
 
+.player-input {
+    border: solid 1px black;
+    color: gray;
+    width: 50%;
+    height: 100%;
+    line-height: 50px;
+    font-size: 1.5em;
+}
+
 #board {
     font-family: 'Swanky and Moo Moo', cursive;
 }
 
-#play {border-radius: 0 0 0 20px;}
+#change-players, #submit-names {border-radius: 0 0 0 20px;}
 #restart {border-radius: 0 0 20px 0;}
 .top-left{border-radius: 20px 0 0 0;}
 .top-right{border-radius: 0 20px 0 0;}
@@ -87,4 +96,9 @@ h1 {
 .winning-cell{
     color: white;
     border-color: black;
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
 }

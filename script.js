@@ -99,8 +99,8 @@ const gameBoard = (() => {
 })();
 
 const displayController =  (() => {
-    const player1 = Player('Player', 'X');
-    const player2 = Player('Computer', 'O');
+    let player1 = Player('Player 1', 'X');
+    let player2 = Player('Computer', 'O');
 
     let currentPlayer = player1;
     let gameOver = false;
@@ -109,14 +109,39 @@ const displayController =  (() => {
         return gameBoard.getResult() != null;
     }
 
-    //replace names if not null
-    const changePlayerNames = (nameArr) => {
-        if(isLegalName(nameArr[0])) player1.name = nameArr[0];
-        if(isLegalName(nameArr[1])) player2.name = nameArr[1];
+    const toggleView = () => {const playerInfos = document.querySelectorAll('.player-info');
+    playerInfos.forEach( (playerInfo) => {playerInfo.classList.toggle('hidden')});
+    const playerInputs = document.querySelectorAll('.player-input');
+    playerInputs.forEach( (playerInput) => {playerInput.classList.toggle('hidden')});
+    document.querySelector('#submit-names').classList.toggle('hidden');
+    document.querySelector('#change-players').classList.toggle('hidden');
     }
 
-    const isLegalName = (name) => {
-        if(name.includes('Wins') || name.includes('Computer')) {
+    const changePlayerNames = () => {
+        toggleView();
+        document.querySelector('#player1').focus();
+    }
+
+    const submitPlayerNames = () => {
+        const player1Input = document.querySelector('#player1');
+        const player1Name = player1Input.value;
+        player1Input.value = "";
+        const player2Input = document.querySelector('#player2');
+        const player2Name = player2Input.value;
+        player2Input.value = "";
+        if(isLegalName(player1Name, true)) {
+            player1= Player(player1Name ? player1Name : 'Player 1', 'X');
+            if(isLegalName(player2Name, false)){
+                player2 = Player(player2Name ? player2Name : 'Player 2', 'O');
+                toggleView();
+                reset();
+                updatePlayerInfo();
+            }
+        }
+    }
+
+    const isLegalName = (name, isFirst) => {
+        if(name.includes('Wins') || (name.includes('Computer') && isFirst)) {
             alert('Illegal name');
             return false;
         }
@@ -202,7 +227,9 @@ const displayController =  (() => {
         gameBoard.resetBoard();
 
         const endResult = document.querySelector('.result-display');
-        endResult.parentElement.removeChild(endResult);
+        if(endResult){
+            endResult.parentElement.removeChild(endResult);
+        }
         
         gameOver = false;
         currentPlayer = player1;
@@ -219,6 +246,7 @@ const displayController =  (() => {
         cellPressed,
         reset,
         updatePlayerInfo,
+        submitPlayerNames,
     }
 })();
 
@@ -322,6 +350,8 @@ function createDOM() {
         board.appendChild(row);
     }
     document.getElementById('restart').addEventListener('click', displayController.reset);
+    document.getElementById('change-players').addEventListener('click', displayController.changePlayerNames);
+    document.getElementById('submit-names').addEventListener('click', displayController.submitPlayerNames);
     displayController.updatePlayerInfo();
 }
 
