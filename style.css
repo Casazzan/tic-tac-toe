@@ -1,5 +1,5 @@
 body {
-    font-family: 'Swanky and Moo Moo', cursive;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 h1 {
@@ -15,6 +15,56 @@ h1 {
     text-align: center;
 }
 
+#main-item{
+    background-color: rgb(7, 120, 124);
+    width: 500px;
+    height: 600px;
+    margin: auto;
+    border-radius: 20px;
+}
+
+#menu {
+    height: 50px;
+    display: flex;
+    margin-top: 25px;
+}
+
+#player-display{
+    height: 50px;
+    margin-bottom: 50px;
+    background-color: white;
+    display: flex;
+}
+
+.player-info{
+    color: rgb(7, 120, 124);
+    border: solid 1px black;
+    width: 50%;
+    height: 100%;
+    text-align: center;
+    line-height: 50px;
+    font-size: 1.5em;
+}
+
+#board {
+    font-family: 'Swanky and Moo Moo', cursive;
+}
+
+#play {border-radius: 0 0 0 20px;}
+#restart {border-radius: 0 0 20px 0;}
+.top-left{border-radius: 20px 0 0 0;}
+.top-right{border-radius: 0 20px 0 0;}
+.menu-button {
+    background-color: white;
+    color:rgb(7, 120, 124);
+    width: 50%;
+    font-size: 1.5em;
+}
+
+.menu-button:hover {
+    background-color: rgb(235, 235, 235);
+}
+
 .row {
     display: flex;
     justify-content: center;
@@ -28,8 +78,8 @@ h1 {
     border-right: solid 5px;
 }
 
-p{
-    padding-top: .7em;
+.result-display{
+    padding-top: .5em;
     text-align: center;
-    font-size: 7em;
+    font-size: 6em;
 }
