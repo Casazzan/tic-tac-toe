@@ -278,17 +278,16 @@ const displayController =  (() => {
 const AI = (() => {
     let playerSymbol = 'X';
     let AISymbol = 'O';
-    let tempBoard;
     let bestMove;
 
     const getMove = () => {
-        tempBoard = gameBoard.getBoard();
         let nodeList = getEmptyNodes();
         minimax(nodeList, true, true);
         return bestMove;
     }
 
     const getEmptyNodes = () => {
+        let tempBoard = gameBoard.getBoard();
         let nodeList = [];
         for(let row = 0; row < 3; row++) {
             for(let col = 0; col < 3; col++) {
