@@ -194,7 +194,6 @@ const displayController =  (() => {
 
         if(result.includes('Wins')) {
             const winningCells = gameBoard.getWinningCells();
-            console.log(winningCells);
             const displayCells = document.querySelectorAll('.cell');
             displayCells.forEach( (displayCell) => {
                 winningCells.forEach( (winningCell) => {
@@ -219,6 +218,13 @@ const displayController =  (() => {
     }
 
     const reset = () => {
+        const cover = document.getElementById('board-cover');
+        cover.classList.add('slide-in');
+        cover.classList.remove('slide-out');
+        cover.addEventListener('animationend', resetDisplay);
+    }
+
+    const resetDisplay = () => {
         const cells = document.querySelectorAll('.cell');
         cells.forEach( cell => {
             cell.innerHTML = "";
@@ -233,6 +239,11 @@ const displayController =  (() => {
         
         gameOver = false;
         currentPlayer = player1;
+
+        const cover = document.getElementById('board-cover');
+        cover.removeEventListener('animationend', resetDisplay);
+        cover.classList.remove('slide-in');
+        cover.classList.add('slide-out');
     }
 
     const updatePlayerInfo = () => {

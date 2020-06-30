@@ -90,7 +90,43 @@ h1 {
 .result-display{
     padding-top: .5em;
     text-align: center;
-    font-size: 6em;
+    font-size: 4em;
+}
+
+#board-cover {
+    position: absolute;
+    margin: auto;
+    width: 0px;
+    height: 450px;
+    background-color: rgb(7, 120, 124);
+}
+
+.slide-in {
+    animation: slide-in 2s;
+    animation-fill-mode: forwards;  
+}
+
+.slide-out {
+    animation: slide-out 2s;
+    animation-fill-mode: forwards;  
+}
+
+@keyframes slide-in {
+    from {
+        width: 0px
+    }
+    to {
+        width: 500px
+    }
+}
+
+@keyframes slide-out {
+    from {
+        width: 500px
+    }
+    to {
+        width: 0px;
+    }
 }
 
 .winning-cell{
