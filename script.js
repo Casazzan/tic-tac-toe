@@ -13,6 +13,11 @@ const gameBoard = (() => {
         ["","",""],
     ];
 
+    //for AI
+    const getBoard = () => {
+        return board;
+    }
+
     const resetBoard = () => {
         board = [
             ["","",""],
@@ -91,6 +96,7 @@ const gameBoard = (() => {
         getResult,
         unmakeMove,
         getWinningCells,
+        getBoard,
     };
 })();
 
