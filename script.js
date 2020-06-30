@@ -5,17 +5,13 @@ const Player = (name, symbol) => {
     return { name , symbol, toString};
 }
 
+
 const gameBoard = (() => {
     let board = [
         ["","",""],
         ["","",""],
         ["","",""],
     ];
-
-    //REMOVE after done testing
-    const getBoard = () => {
-        return board;
-    };
 
     const resetBoard = () => {
         board = [
@@ -37,6 +33,10 @@ const gameBoard = (() => {
     //precondition: isValidMove == true
     const makeMove = (symbol, row, col) => {
         board[row][col] = symbol;
+    }
+
+    const unmakeMove = (row, col) => {
+        board[row][col] = "";
     }
 
     const getResult = () => {
@@ -84,19 +84,16 @@ const gameBoard = (() => {
         }
     }
 
-    const unmakeMove = (row, col) => {
-        board[row][col] = "";
-    }
     return { 
         resetBoard,
         makeMove,
         isValidMove,
         getResult,
-        getBoard,
         unmakeMove,
         getWinningCells,
     };
 })();
+
 
 const displayController =  (() => {
     let player1 = Player('Player 1', 'X');
@@ -105,16 +102,107 @@ const displayController =  (() => {
     let currentPlayer = player1;
     let gameOver = false;
 
+
+
+    //player move handlers
+    const nextTurn = () => {
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+        if(currentPlayer.name == 'Computer') {
+            setTimeout( () => { makeAIMove() }, 1000);
+        }
+    }
+
+    const makeMove = (row, col) => {
+        gameBoard.makeMove(currentPlayer.symbol, row, col);
+        if(isOver()) {
+            const result = gameBoard.getResult();
+            displayResult( stringifyResult(result) );
+            gameOver = true;
+        }
+        else {
+            nextTurn();
+        }
+    }
+
+    const cellPressed = (e) => {
+        if(gameOver || currentPlayer.name == 'Computer') return;
+        const row = e.target.dataset.row;
+        const col = e.target.dataset.col;
+        if(gameBoard.isValidMove(row, col)) {
+            e.target.innerHTML = currentPlayer.symbol;
+            makeMove(row, col);
+        }
+    }
+
+    const makeAIMove = () => {
+        const move = AI.getMove();
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach( (cell) => {
+            if(cell.dataset.row == move.row && cell.dataset.col == move.col){
+                cell.innerHTML = currentPlayer.symbol;
+            }
+        });
+        makeMove(move.row, move.col);
+    }
+
+
+    //game over handlers
     const isOver = () => {
         return gameBoard.getResult() != null;
     }
+    
+    const stringifyResult = (result) =>{
+        if(result == 'Tie'){
+            return 'Tie!';
+        }
+        else {
+            return (currentPlayer.toString() +' Wins!');
+        }
+    }
 
-    const toggleView = () => {const playerInfos = document.querySelectorAll('.player-info');
-    playerInfos.forEach( (playerInfo) => {playerInfo.classList.toggle('hidden')});
-    const playerInputs = document.querySelectorAll('.player-input');
-    playerInputs.forEach( (playerInput) => {playerInput.classList.toggle('hidden')});
-    document.querySelector('#submit-names').classList.toggle('hidden');
-    document.querySelector('#change-players').classList.toggle('hidden');
+    const displayResult = (result) => {
+        const container = document.querySelector('body');
+        const p = document.createElement('p');
+        p.textContent = result;
+        p.classList.add('result-display');
+        container.appendChild(p);
+
+        if(result.includes('Wins')) {
+            const winningCells = gameBoard.getWinningCells();
+            const displayCells = document.querySelectorAll('.cell');
+            displayCells.forEach( (displayCell) => {
+                winningCells.forEach( (winningCell) => {
+                    if(displayCell.dataset.row == winningCell.row && displayCell.dataset.col == winningCell.col) {
+                        displayCell.classList.add('winning-cell');
+                    }
+                });
+            });
+        }
+    }
+
+
+    //name change handlers
+    const isLegalName = (name, isFirst) => {
+        if(name.includes('Wins') || (name.includes('Computer') && isFirst)) {
+            alert('Illegal name');
+            return false;
+        }
+        return true;
+    }
+
+    const updatePlayerInfo = () => {
+        const playerInfos = document.querySelectorAll('.player-info');
+        playerInfos[0].textContent = player1.toString();
+        playerInfos[1].textContent = player2.toString();
+    }
+
+    const toggleView = () => {
+        const playerInfos = document.querySelectorAll('.player-info');
+        playerInfos.forEach( (playerInfo) => {playerInfo.classList.toggle('hidden')});
+        const playerInputs = document.querySelectorAll('.player-input');
+        playerInputs.forEach( (playerInput) => {playerInput.classList.toggle('hidden')});
+        document.querySelector('#submit-names').classList.toggle('hidden');
+        document.querySelector('#change-players').classList.toggle('hidden');
     }
 
     const changePlayerNames = () => {
@@ -140,83 +228,8 @@ const displayController =  (() => {
         }
     }
 
-    const isLegalName = (name, isFirst) => {
-        if(name.includes('Wins') || (name.includes('Computer') && isFirst)) {
-            alert('Illegal name');
-            return false;
-        }
-        return true;
-    }
 
-    const nextTurn = () => {
-        currentPlayer = currentPlayer == player1 ? player2 : player1;
-        if(currentPlayer.name == 'Computer') {
-            setTimeout( () => { makeAIMove() }, 1000);
-        }
-    }
-
-    const makeAIMove = () => {
-        const move = AI.getMove();
-        const cells = document.querySelectorAll('.cell');
-        cells.forEach( (cell) => {
-            if(cell.dataset.row == move.row && cell.dataset.col == move.col){
-                cell.innerHTML = currentPlayer.symbol;
-            }
-        });
-        makeMove(move.row, move.col);
-    }
-
-    const stringifyResult = (result) =>{
-        if(result == 'Tie'){
-            return 'Tie!';
-        }
-        else {
-            return (currentPlayer.toString() +' Wins!');
-        }
-    }
-
-    const cellPressed = (e) => {
-        if(gameOver || currentPlayer.name == 'Computer') return;
-        const row = e.target.dataset.row;
-        const col = e.target.dataset.col;
-        if(gameBoard.isValidMove(row, col)) {
-            e.target.innerHTML = currentPlayer.symbol;
-            makeMove(row, col);
-        }
-    }
-
-    const displayResult = (result) => {
-        const container = document.querySelector('body');
-        const p = document.createElement('p');
-        p.textContent = result;
-        p.classList.add('result-display');
-        container.appendChild(p);
-
-        if(result.includes('Wins')) {
-            const winningCells = gameBoard.getWinningCells();
-            const displayCells = document.querySelectorAll('.cell');
-            displayCells.forEach( (displayCell) => {
-                winningCells.forEach( (winningCell) => {
-                    if(displayCell.dataset.row == winningCell.row && displayCell.dataset.col == winningCell.col) {
-                        displayCell.classList.add('winning-cell');
-                    }
-                });
-            });
-        }
-    }
-
-    const makeMove = (row, col) => {
-        gameBoard.makeMove(currentPlayer.symbol, row, col);
-        if(isOver()) {
-            const result = gameBoard.getResult();
-            displayResult( stringifyResult(result) );
-            gameOver = true;
-        }
-        else {
-            nextTurn();
-        }
-    }
-
+    //reset handlers
     const reset = () => {
         const cover = document.getElementById('board-cover');
         cover.classList.add('slide-in');
@@ -246,12 +259,6 @@ const displayController =  (() => {
         cover.classList.add('slide-out');
     }
 
-    const updatePlayerInfo = () => {
-        const playerInfos = document.querySelectorAll('.player-info');
-        playerInfos[0].textContent = player1.toString();
-        playerInfos[1].textContent = player2.toString();
-    }
-
     return {
         changePlayerNames,
         cellPressed,
@@ -261,11 +268,19 @@ const displayController =  (() => {
     }
 })();
 
+
 const AI = (() => {
     let playerSymbol = 'X';
     let AISymbol = 'O';
     let tempBoard;
     let bestMove;
+
+    const getMove = () => {
+        tempBoard = gameBoard.getBoard();
+        let nodeList = getEmptyNodes();
+        minimax(nodeList, true, true);
+        return bestMove;
+    }
 
     const getEmptyNodes = () => {
         let nodeList = [];
@@ -286,7 +301,6 @@ const AI = (() => {
         if(result == playerSymbol) return -1;
         return null;
     }
-
 
     const minimax = (nodeList, maximizingPlayer, isImmediateMove) => {
         if(getHueristic() !== null) return getHueristic();
@@ -320,28 +334,10 @@ const AI = (() => {
         }
     }
 
-    const getMove = () => {
-        tempBoard = gameBoard.getBoard();
-        let nodeList = getEmptyNodes();
-        minimax(nodeList, true, true);
-        return bestMove;
-    }
-
     return {
         getMove,
     }
 })();
-
-function test () {
-    gameBoard.makeMove('X', 0, 1);
-    gameBoard.makeMove('X', 0, 2);
-    gameBoard.makeMove('X', 0, 0);
-    console.log('gameBoard.isValidMove(0, 0):', gameBoard.isValidMove(0, 0));
-    console.log('gameBoard.isValidMove(1, 1):', gameBoard.isValidMove(1, 1));
-    console.log(gameBoard.getBoard());
-    console.log(gameBoard.getResult());
-    console.log('displayController.isOver(): ', displayController.isOver());
-}
 
 function createDOM() {
     const board = document.getElementById('board');
