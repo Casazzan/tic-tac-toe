@@ -48,7 +48,6 @@ h1 {
 
 .player-input {
     border: solid 1px black;
-    color: gray;
     width: 50%;
     height: 100%;
     line-height: 50px;
@@ -59,10 +58,17 @@ h1 {
     font-family: 'Swanky and Moo Moo', cursive;
 }
 
-#change-players, #submit-names {border-radius: 0 0 0 20px;}
-#restart {border-radius: 0 0 20px 0;}
+.bottom-left {
+    border-radius: 0 0 0 20px;
+}
+.bottom-left:focus {
+    box-shadow: 0px 0px 0px 1px #fff inset;
+}
+.bottom-right {border-radius: 0 0 20px 0;}
 .top-left{border-radius: 20px 0 0 0;}
 .top-right{border-radius: 0 20px 0 0;}
+
+
 .menu-button {
     background-color: white;
     color:rgb(7, 120, 124);
