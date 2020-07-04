@@ -1,8 +1,8 @@
-const Player = (name, symbol) => {
+const Player = (name, symbol, isComputer) => {
     const toString = () => {
         return name + ' (' + symbol +')';
     }
-    return { name , symbol, toString};
+    return { name , symbol, isComputer, toString};
 }
 
 
@@ -112,9 +112,10 @@ const displayController =  (() => {
 
     //player move handlers
     const nextTurn = () => {
+        const otherPlayerSymbol = currentPlayer.symbol;
         currentPlayer = currentPlayer == player1 ? player2 : player1;
-        if(currentPlayer.name == 'Computer') {
-            setTimeout( () => { makeAIMove() }, 1000);
+        if(currentPlayer.isComputer) {
+            setTimeout( () => { makeAIMove(currentPlayer.symbol, otherPlayerSymbol) }, 1000);
         }
     }
 
@@ -140,8 +141,8 @@ const displayController =  (() => {
         }
     }
 
-    const makeAIMove = () => {
-        const move = AI.getMove();
+    const makeAIMove = (maxSymbol, minSymbol) => {
+        const move = AI.getMove(maxSymbol, minSymbol);
         const cells = document.querySelectorAll('.cell');
         cells.forEach( (cell) => {
             if(cell.dataset.row == move.row && cell.dataset.col == move.col){
@@ -276,11 +277,13 @@ const displayController =  (() => {
 
 
 const AI = (() => {
-    let playerSymbol = 'X';
-    let AISymbol = 'O';
+    let maxSymbol = 'X';
+    let minSymbol = 'O';
     let bestMove;
 
-    const getMove = () => {
+    const getMove = (maxS, minS) => {
+        maxSymbol = maxS;
+        minSymbol = minS;
         let nodeList = getEmptyNodes();
         minimax(nodeList, true, true);
         return bestMove;
@@ -301,9 +304,9 @@ const AI = (() => {
 
     const getHueristic = () => {
         let result = gameBoard.getResult();
-        if(result == AISymbol) return 2;
+        if(result == maxSymbol) return 2;
         if(result == 'Tie') return 1;
-        if(result == playerSymbol) return -1;
+        if(result == minSymbol) return -1;
         return null;
     }
 
@@ -313,7 +316,7 @@ const AI = (() => {
             let value = -2;
             for(let i = 0; i < nodeList.length; i++) {
                 const tempNode = nodeList.splice(i, 1)[0];
-                gameBoard.makeMove(AISymbol, tempNode.row, tempNode.col);
+                gameBoard.makeMove(maxSymbol, tempNode.row, tempNode.col);
                 let tempValue = minimax(nodeList, false, false);
                 if(tempValue > value) {
                     if(isImmediateMove) {
@@ -330,7 +333,7 @@ const AI = (() => {
             let value = 3;
             for(let i = 0; i < nodeList.length; i++) {
                 const tempNode = nodeList.splice(i, 1)[0];
-                gameBoard.makeMove(playerSymbol, tempNode.row, tempNode.col);
+                gameBoard.makeMove(minSymbol, tempNode.row, tempNode.col);
                 value = Math.min(value, minimax(nodeList, true, false));
                 gameBoard.unmakeMove(tempNode.row, tempNode.col);
                 nodeList.splice(i, 0, tempNode);
