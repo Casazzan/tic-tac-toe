@@ -1,190 +1,196 @@
 body {
-    font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 h1 {
-    text-align: center;
-    font-size: 7em;
+  text-align: center;
+  font-size: 7em;
 }
 
 .cell {
-    width: 150px;
-    height: 150px;
-    line-height: 150px;
-    font-size: 150px;
-    text-align: center;
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
+  font-size: 150px;
+  text-align: center;
 }
 
-#main-item{
-    background-color: rgb(7, 120, 124);
-    width: 500px;
-    height: 600px;
-    margin: auto;
-    border-radius: 20px;
+#main-item {
+  background-color: rgb(7, 120, 124);
+  width: 500px;
+  height: 600px;
+  margin: auto;
+  border-radius: 20px;
 }
 
 #menu {
-    height: 50px;
-    display: flex;
-    margin-top: 25px;
+  height: 50px;
+  display: flex;
+  margin-top: 25px;
 }
 
-#player-display{
-    height: 50px;
-    margin-bottom: 50px;
-    background-color: white;
-    display: flex;
+#player-display {
+  height: 50px;
+  margin-bottom: 50px;
+  background-color: white;
+  display: flex;
 }
 
-.player-info{
-    color: rgb(7, 120, 124);
-    border: solid 1px black;
-    width: 50%;
-    height: 100%;
-    text-align: center;
-    line-height: 50px;
-    font-size: 1.5em;
+.player-info {
+  color: rgb(7, 120, 124);
+  border: solid 1px black;
+  width: 50%;
+  height: 100%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 1.5em;
 }
 
 .player-input {
-    border: solid 1px black;
+  border: solid 1px black;
 }
 
 #board {
-    font-family: 'Swanky and Moo Moo', cursive;
+  font-family: "Swanky and Moo Moo", cursive;
 }
 
 .bottom-left {
-    border-radius: 0 0 0 20px;
+  border-radius: 0 0 0 20px;
 }
-.bottom-right {border-radius: 0 0 20px 0;}
-.top-left{border-radius: 20px 0 0 0;}
-.top-right{border-radius: 0 20px 0 0;}
-
+.bottom-right {
+  border-radius: 0 0 20px 0;
+}
+.top-left {
+  border-radius: 20px 0 0 0;
+}
+.top-right {
+  border-radius: 0 20px 0 0;
+}
 
 .menu-button {
-    background-color: white;
-    color:rgb(7, 120, 124);
-    width: 50%;
-    font-size: 1.5em;
+  background-color: white;
+  color: rgb(7, 120, 124);
+  width: 50%;
+  font-size: 1.5em;
 }
 
 .menu-button:hover {
-    background-color: rgb(235, 235, 235);
+  background-color: rgb(235, 235, 235);
 }
 
 .row {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
-[data-row="0"], [data-row="1"] {
-    border-bottom: solid 5px;
+[data-row="0"],
+[data-row="1"] {
+  border-bottom: solid 5px;
 }
 
-[data-col="0"], [data-col="1"] {
-    border-right: solid 5px;
+[data-col="0"],
+[data-col="1"] {
+  border-right: solid 5px;
 }
 
-.result-display{
-    padding-top: .5em;
-    text-align: center;
-    font-size: 4em;
+.result-display {
+  padding-top: 0.5em;
+  text-align: center;
+  font-size: 4em;
 }
 
 #board-cover {
-    position: absolute;
-    margin: auto;
-    width: 0px;
-    height: 450px;
-    background-color: rgb(7, 120, 124);
+  position: absolute;
+  margin: auto;
+  width: 0px;
+  height: 450px;
+  background-color: rgb(7, 120, 124);
 }
 
 #game-change-menu {
-    margin: auto;
-    width: 500px;
-    height: 450px;
-    background-color: rgb(7, 120, 124);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
+  margin: auto;
+  width: 500px;
+  height: 450px;
+  background-color: rgb(7, 120, 124);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
 }
 #vs {
-    font-size: 70px;
+  font-size: 70px;
 }
 .player-selection {
-    display: flex;
-    justify-content: space-evenly;
-    margin-top: 5px;
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 5px;
 }
 
 .player-selection label {
-    text-align: center;
-    color: rgb(5, 102, 105);
-    display: inline-block;
-    background-color: white;
-    border: solid black 1px;
-    border-radius: 5px;
-    width: 110px;
+  text-align: center;
+  color: rgb(5, 102, 105);
+  display: inline-block;
+  background-color: white;
+  border: solid black 1px;
+  border-radius: 5px;
+  width: 110px;
 }
 
 .player-selection input[type="radio"] {
-    display: none;
+  display: none;
 }
 
-.player-selection input[type="radio"]:checked + label{
-    background-color: rgb(0, 255, 98);
+.player-selection input[type="radio"]:checked + label {
+  background-color: rgb(0, 255, 98);
 }
 
-.player-selection input[type="radio"]:hover + label{
-    background-color: rgba(0, 255, 98, 0.596);
+.player-selection input[type="radio"]:hover + label {
+  background-color: rgba(0, 255, 98, 0.596);
 }
 
-.name-selection input[type="text"]  {
-    height: 40px;
-    border-radius: 4px;
-    font-size: 20px
-} 
+.name-selection input[type="text"] {
+  height: 40px;
+  border-radius: 4px;
+  font-size: 20px;
+}
 
 label {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .slide-in {
-    animation: slide-in 2s;
-    animation-fill-mode: forwards;  
+  animation: slide-in 2s;
+  animation-fill-mode: forwards;
 }
 
 .slide-out {
-    animation: slide-out 2s;
-    animation-fill-mode: forwards;  
+  animation: slide-out 2s;
+  animation-fill-mode: forwards;
 }
 
 @keyframes slide-in {
-    from {
-        width: 0px
-    }
-    to {
-        width: 500px
-    }
+  from {
+    width: 0px;
+  }
+  to {
+    width: 500px;
+  }
 }
 
 @keyframes slide-out {
-    from {
-        width: 500px
-    }
-    to {
-        width: 0px;
-    }
+  from {
+    width: 500px;
+  }
+  to {
+    width: 0px;
+  }
 }
 
-.winning-cell{
-    color: white;
-    border-color: black;
+.winning-cell {
+  color: white;
+  border-color: black;
 }
 
 .hidden {
-    display: none;
-    opacity: 0;
+  display: none !important;
 }
