@@ -150,6 +150,7 @@ h1 {
 label {
     font-size: 20px;
 }
+
 .slide-in {
     animation: slide-in 2s;
     animation-fill-mode: forwards;  
