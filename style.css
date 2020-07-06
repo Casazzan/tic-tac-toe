@@ -215,6 +215,23 @@ label {
   .cell {
     width: 95px;
     height: 135px;
+    font-size: 100px;
+  }
+  .player-name-label {
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (max-height: 700px) {
+  h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 30px;
+  }
+  .result-display {
+    margin-top: 0;
+    font-size: 30px;
   }
 }
 
