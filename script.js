@@ -165,7 +165,7 @@ const displayController = (() => {
   };
 
   const cellPressed = (e) => {
-    if (gameOver || currentPlayer.name == "Computer") return;
+    if (gameOver || currentPlayer.isComputer) return;
     const row = e.target.dataset.row;
     const col = e.target.dataset.col;
     if (gameBoard.isValidMove(row, col)) {
@@ -285,11 +285,20 @@ const displayController = (() => {
         );
         changeMenu();
         updatePlayerInfo();
+        if (player1Bool) {
+          makeAIMoveFirst();
+        }
       }
     }
   };
 
   //reset handlers
+  const makeAIMoveFirst = () => {
+    setTimeout(() => {
+      makeAIMove("X", "O");
+    }, 4000);
+  };
+
   const slideOut = () => {
     const cover = document.getElementById("board-cover");
     cover.classList.remove("slide-in");
@@ -304,6 +313,9 @@ const displayController = (() => {
       resetBoardDisplay();
       cover.removeEventListener("animationend", end);
     });
+    if (player1.isComputer) {
+      makeAIMoveFirst();
+    }
   };
 
   const resetBoardDisplay = () => {
