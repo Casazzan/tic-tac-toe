@@ -137,7 +137,7 @@ const gameBoard = (() => {
 
 const displayController = (() => {
   let player1 = Player("Player 1", "X");
-  let player2 = Player("Computer", "O");
+  let player2 = Player("Player 2", "O");
 
   let currentPlayer = player1;
   let gameOver = false;
